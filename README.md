@@ -40,8 +40,6 @@
 	-	Use environment variables and n8n’s encrypted credential store.
 	-	If using real customer data, sanitize or mock in public repos.
 
-  ---
-
 ##  🧾 License
 MIT License © 2025 — free to use and modify.
 
