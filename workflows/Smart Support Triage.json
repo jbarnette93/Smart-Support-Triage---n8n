@@ -1,0 +1,164 @@
+{
+  "name": "Smart Support Triage",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/support-intake",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "be9c3cec-e694-44cc-8676-00cf435f7d75",
+      "name": "Webhook",
+      "webhookId": "52e3ad83-7b2e-48e9-bc3e-e37bc2996bdb",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = items[0].json;\nconst text = (msg.subject + ' ' + msg.body).toLowerCase();\n\nlet category = 'General';\nif (text.includes('login') || text.includes('password')) category = 'Account';\nelse if (text.includes('bill') || text.includes('payment')) category = 'Billing';\nelse if (text.includes('bug') || text.includes('error')) category = 'Bug';\n\nreturn [{\n  json: {\n    ...msg,\n    category,\n    received_at: new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5932fce6-d8e7-462c-8cbc-6b9942ea4fea",
+      "name": "Extract Category"
+    },
+    {
+      "parameters": {
+        "fromEmail": "jonathan.barnette@gmail.com",
+        "toEmail": "jonathan.barnette@gmail.com",
+        "subject": "Test From n8n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "9dba045c-979f-477f-a6cb-85949f5095a3",
+      "name": "Send email",
+      "webhookId": "52e77325-f5dd-4c01-bd96-e2e54af8a65a",
+      "credentials": {
+        "smtp": {
+          "id": "nuu4lfQx6bB9PhD7",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = items[0].json;\nconst text = (msg.subject + ' ' + msg.body).toLowerCase();\n\n// Default score\nlet score = 10;\n\n// Add points if certain patterns appear\nif (text.includes('error') || text.includes('bug') || text.includes('crash')) score += 40;\nif (text.includes('login') || text.includes('password')) score += 20;\nif (text.length > 500) score += 10;\nif (text.includes('again') || text.includes('still')) score += 10;\n\n// Decide whether to create a ticket\nconst is_complicated = score >= 40;\n\nreturn [{\n  json: {\n    ...msg,\n    complexity_score: score,\n    is_complicated\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "3b8ee768-ef95-423a-bb3c-370a1329bc6f",
+      "name": "Complexity Classifier"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "298ea938-29b5-4be7-aad1-7d323e44f590",
+              "leftValue": "={{ $json.is_complicated }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "4b9ecf91-b8f8-4d9f-9d01-baf744c3a6cc",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Category": {
+      "main": [
+        [
+          {
+            "node": "Complexity Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Complexity Classifier": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "466534af-b166-4984-88cf-1a8493b65f1e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "770fb38c63bcc2e12acec9f7736933f1584f732a437d461627c5073e98a6bd6f"
+  },
+  "id": "DZIo9vM7pkQWQ9jU",
+  "tags": [
+    {
+      "name": "v1",
+      "id": "2yvNh6ZccJtOZWm3",
+      "updatedAt": "2025-10-31T15:13:18.697Z",
+      "createdAt": "2025-10-31T15:13:18.697Z"
+    }
+  ]
+}
