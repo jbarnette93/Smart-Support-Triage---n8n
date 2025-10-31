@@ -55,7 +55,7 @@ MIT License © 2025 — free to use and modify.
 
 ## 👤 Author
 
-  Jonathan Barnette
-  Data Automation / AI Automation Engineer
-  GitHub: https://github.com/
-  LinkedIn: https://www.linkedin.com/in/jonathan-barnette
+ - Jonathan Barnette
+ - Data Automation / AI Automation Engineer
+ - GitHub: https://github.com/
+ - LinkedIn: https://www.linkedin.com/in/jonathan-barnette
