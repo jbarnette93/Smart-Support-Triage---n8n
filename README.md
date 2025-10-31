@@ -4,8 +4,6 @@
 
 > This project showcases real-world **AI + workflow orchestration** patterns used by Applied AI and Automation teams to cut manual triage and boost response times.
 
----
-
 ## 🔑 Key Features
 
 - 🔍 **AI-Powered Categorization**  
@@ -25,8 +23,6 @@
 - 🧰 **Modular & Extensible**  
   Separates steps (classification, scoring, routing, logging) for easy upgrades (RAG, Docker, CI/CD).
 
----
-
 ## 🧰 Tech Stack
 
 | Layer | Tools / Services | Purpose |
@@ -38,8 +34,6 @@
 | Deployment | **Docker** (future) | Reproducible local/runtime environment |
 | Vector Search | **Chroma / Pinecone** (future) | RAG upgrades |
 | CI/CD | **GitHub Actions** (future) | Tests, linting, deploys |
-
----
 
 ## 🔐 Security & Privacy
 	-	Do not commit real credentials or tokens.
