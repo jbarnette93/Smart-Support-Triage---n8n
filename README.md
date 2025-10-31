@@ -51,3 +51,5 @@ MIT License © 2025 — free to use and modify.
  - Data Automation / AI Automation Engineer
  - GitHub: https://github.com/
  - LinkedIn: https://www.linkedin.com/in/jonathan-barnette
+
+
