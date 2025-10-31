@@ -8,21 +8,21 @@
 
 ## 🔑 Key Features
 
-🔍 **AI-Powered Categorization**  
+- 🔍 **AI-Powered Categorization**  
   Classifies messages (e.g., Billing, Account, Bug) and extracts key entities.
 
-🧮 **Complexity Scoring**  
+- 🧮 **Complexity Scoring**  
   Applies rules and/or an LLM to assign a score and prioritize escalation.
 
-🚦 **Automated Routing**  
+- 🚦 **Automated Routing**  
   - High complexity → **Create Jira ticket**  
   - Medium complexity → **Notify Slack channel**  
   - Low complexity → **Email summary only**
 
-🗂️ **Centralized Logging**  
+- 🗂️ **Centralized Logging**  
   Logs every triaged message to **Google Sheets** (V1) or **PostgreSQL** (advanced).
 
-🧰 **Modular & Extensible**  
+- 🧰 **Modular & Extensible**  
   Separates steps (classification, scoring, routing, logging) for easy upgrades (RAG, Docker, CI/CD).
 
 ## 🧠 Glossary (Plain English)
