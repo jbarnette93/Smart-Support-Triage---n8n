@@ -25,14 +25,6 @@
 - 🧰 **Modular & Extensible**  
   Separates steps (classification, scoring, routing, logging) for easy upgrades (RAG, Docker, CI/CD).
 
-## 🧠 Glossary (Plain English)
-
-- **Webhook**: A URL that receives data (JSON) when another system “pushes” it—like a doorbell that rings with new info.  
-- **LLM (Large Language Model)**: An AI that understands and generates text (OpenAI, Claude, local models via Ollama).  
-- **Vector DB & RAG (future)**: Store docs as vectors (numbers). At runtime, retrieve relevant chunks and give them to the LLM for more accurate answers (**R**etrieval-**A**ugmented **G**eneration).  
-- **Docker (future)**: Package everything into a portable container that runs anywhere with one command.  
-- **Kubernetes (future)**: Orchestrates many containers on servers (scale, restart, monitor).
-
 ---
 
 ## 🧰 Tech Stack
@@ -63,7 +55,7 @@ MIT License © 2025 — free to use and modify.
 
 ## 👤 Author
 
-Jonathan Barnette
-Data Automation / AI Automation Engineer
-GitHub: https://github.com/
-LinkedIn: https://www.linkedin.com/in/jonathan-barnette
+  Jonathan Barnette
+  Data Automation / AI Automation Engineer
+  GitHub: https://github.com/
+  LinkedIn: https://www.linkedin.com/in/jonathan-barnette
