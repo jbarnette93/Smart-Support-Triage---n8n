@@ -10,13 +10,12 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        0,
-        0
+        480,
+        32
       ],
       "id": "be9c3cec-e694-44cc-8676-00cf435f7d75",
       "name": "Webhook",
-      "webhookId": "52e3ad83-7b2e-48e9-bc3e-e37bc2996bdb",
-      "disabled": true
+      "webhookId": "52e3ad83-7b2e-48e9-bc3e-e37bc2996bdb"
     },
     {
       "parameters": {
@@ -25,8 +24,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        208,
-        0
+        688,
+        32
       ],
       "id": "5932fce6-d8e7-462c-8cbc-6b9942ea4fea",
       "name": "Extract Category"
@@ -35,18 +34,21 @@
       "parameters": {
         "fromEmail": "jonathan.barnette@gmail.com",
         "toEmail": "jonathan.barnette@gmail.com",
-        "subject": "Test From n8n",
+        "subject": "=Triage Result:  {{ $json.category }} - {{ $json.complexity_score }}",
+        "html": "=From:  {{ $json.body.from_email }}<br>\nCategory: {{ $json.category }}<br>\nComlexity: {{ $json.complexity_score }}<br>\nTicket: {{$json.ticket_url}}<br>\n\n",
         "options": {}
       },
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        832,
-        0
+        2080,
+        -144
       ],
-      "id": "9dba045c-979f-477f-a6cb-85949f5095a3",
+      "id": "6a759b87-6e04-441d-95bd-80093f15e51a",
       "name": "Send email",
-      "webhookId": "52e77325-f5dd-4c01-bd96-e2e54af8a65a",
+      "webhookId": "8d400417-3247-4b81-a490-527235f07ca4",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
       "credentials": {
         "smtp": {
           "id": "nuu4lfQx6bB9PhD7",
@@ -56,16 +58,281 @@
     },
     {
       "parameters": {
-        "jsCode": "const msg = items[0].json;\nconst text = (msg.subject + ' ' + msg.body).toLowerCase();\n\n// Default score\nlet score = 10;\n\n// Add points if certain patterns appear\nif (text.includes('error') || text.includes('bug') || text.includes('crash')) score += 40;\nif (text.includes('login') || text.includes('password')) score += 20;\nif (text.length > 500) score += 10;\nif (text.includes('again') || text.includes('still')) score += 10;\n\n// Decide whether to create a ticket\nconst is_complicated = score >= 40;\n\nreturn [{\n  json: {\n    ...msg,\n    complexity_score: score,\n    is_complicated\n  }\n}];"
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1USTX9gMse_eje9s3w6dxYS3oRl1kYQ4QR_bAmdoW88g",
+          "mode": "list",
+          "cachedResultName": "Support Triage Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1USTX9gMse_eje9s3w6dxYS3oRl1kYQ4QR_bAmdoW88g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1USTX9gMse_eje9s3w6dxYS3oRl1kYQ4QR_bAmdoW88g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $('Extract Category').item.json.received_at }}",
+            "from_email": "={{ $('Extract Category').item.json.body.from_email }}",
+            "subject": "={{ $('Extract Category').item.json.body.subject }}",
+            "category": "={{ $('Extract Category').item.json.category }}",
+            "complexity_score": "={{ $('Calculate Complexity + Urgency').item.json.complexity_score }}",
+            "is_complicated": "={{ $('Calculate Complexity + Urgency').item.json.is_complicated }}",
+            "ticket_url": "={{ $json.ticket_url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from_email",
+              "displayName": "from_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "complexity_score",
+              "displayName": "complexity_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "is_complicated",
+              "displayName": "is_complicated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ticket_url",
+              "displayName": "ticket_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2080,
+        32
+      ],
+      "id": "287615e4-08c0-47d8-820d-473263cb6b0c",
+      "name": "Append row in sheet",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TSD4gSnBYbeMwGmk",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09QG4HQ4BT",
+          "mode": "list",
+          "cachedResultName": "support-alerts"
+        },
+        "text": "=🚨 *URGENT SUPPORT ALERT* 🚨\n\n*Category:* {{ $('Extract Category').item.json.category }}\n*Complexity:* {{ $('Calculate Complexity + Urgency').item.json.complexity_score }}\n*From:* {{ $('Webhook').item.json.body.from_email }}\n\n*Subject:* {{ $('Webhook').item.json.body.subject }}\n{{ $('Webhook').item.json.body.body }}\n\nTicket: {{ $json.ticket_url }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2304,
+        272
+      ],
+      "id": "bdec6fa6-bf4a-4f0e-a277-17f846d32f61",
+      "name": "Send a message",
+      "webhookId": "0a2796f1-01a7-44cf-b6f0-294f7734751b",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "slackApi": {
+          "id": "snYkFVRWcAFZijN6",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "10001",
+          "mode": "list",
+          "cachedResultName": "Support Triage"
+        },
+        "issueType": {
+          "__rl": true,
+          "value": "10008",
+          "mode": "list",
+          "cachedResultName": "Bug"
+        },
+        "summary": "={{ $json.body.body }}",
+        "additionalFields": {
+          "assignee": {
+            "__rl": true,
+            "value": "712020:b795cf72-96a6-43fc-8dfa-0ad83580d19e",
+            "mode": "list",
+            "cachedResultName": "Jonathan Barnette"
+          },
+          "description": "=*From:* {{$json.body.from_email || $json.from_email || \"unknown\"}}\n\n*Category:* {{$json.category || \"Uncategorized\"}}\n*Complexity:* {{$json.complexity_score || \"n/a\"}}\n*Urgent:* {{$json.is_urgent ? \"Yes\" : \"No\"}}\n\n*Subject:* {{$json.body.subject || $json.subject || \"No subject\"}}\n\n*Message:*\n{{$json.body.body || $json.bodyText || \"No message text\"}}\n\n*Received:* {{$json.received_at || new Date().toISOString()}}\n`",
+          "priority": {
+            "__rl": true,
+            "value": "={{ $json.is_urgent ? \"4\" : \"3\" }}",
+            "mode": ""
+          }
+        }
+      },
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        32
+      ],
+      "id": "6963b9f8-47b0-413b-b952-4eafd3a3f354",
+      "name": "Create A Bug",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "t3ugEGmymsenbQSp",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1856,
+        -144
+      ],
+      "id": "39508cb4-9ff7-480a-8fb5-7d3a7bb48f00",
+      "name": "Refresh JSON Data"
+    },
+    {
+      "parameters": {
+        "content": "\"Create A Bug\" clears all previous data like urgency, merge needed to fetch it back",
+        "height": 96,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1792,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "c7f93948-db69-4446-afa7-4ef257882085",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "19e4ec7d-90d0-4da6-b2f6-a1ebf7ab47a2",
+              "leftValue": "={{ $json.is_urgent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2080,
+        272
+      ],
+      "id": "ae701b8c-f5a7-47c8-9e91-dbf4d05aa047",
+      "name": "If Urgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = items[0].json;\nconst text = ((msg.body.subject || '') + ' ' + (msg.body.body || '')).toLowerCase();\n\n// Default score\nlet score = 10;\n\n// Add points if certain patterns appear\nif (text.includes('error') || text.includes('bug') || text.includes('crash')) score += 40;\nif (text.includes('login') || text.includes('password')) score += 20;\nif (text.length > 500) score += 10;\nif (text.includes('again') || text.includes('still')) score += 10;\n\n// Decide whether to create a ticket\nconst is_complicated = score >= 40;\n\n// basic urgency check\nconst urgentKeywords = ['urgent', 'immediately', 'asap', 'outage', 'down', 'critical', 'emergency'];\nlet is_urgent = false;\n\nfor (const word of urgentKeywords) {\n  if (text.includes(word)) {\n    is_urgent = true;\n    break;\n  }\n}\n\nreturn [{\n  json: {\n    ...msg,\n    complexity_score: score,\n    is_complicated,\n    is_urgent\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        416,
-        0
+        880,
+        32
       ],
       "id": "3b8ee768-ef95-423a-bb3c-370a1329bc6f",
-      "name": "Complexity Classifier"
+      "name": "Calculate Complexity + Urgency"
     },
     {
       "parameters": {
@@ -86,20 +353,90 @@
                 "operation": "true",
                 "singleValue": true
               }
+            },
+            {
+              "id": "a7a887af-39a6-4f03-8b10-036d8982ffee",
+              "leftValue": "={{ $json.is_urgent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {}
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        624,
-        0
+        1072,
+        32
       ],
       "id": "4b9ecf91-b8f8-4d9f-9d01-baf744c3a6cc",
-      "name": "If"
+      "name": "If Bug Is Complex"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9c082ebe-18b0-433b-be39-7dc1269121a6",
+              "name": "=ticket_url",
+              "value": "={{ \"https://jonathanbarnette.atlassian.net/browse/\" + $json.key }}",
+              "type": "string"
+            },
+            {
+              "id": "5b4f5bac-2e39-4419-bf61-9bb9a921900f",
+              "name": "ticket_note",
+              "value": "Bug created",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        32
+      ],
+      "id": "8ccb523e-e0ea-4284-b570-4716a19be652",
+      "name": "Set ticket_url"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "932da4bb-e312-45b3-af78-f7d4afe620d3",
+              "name": "ticket_url",
+              "value": "No ticket created",
+              "type": "string"
+            },
+            {
+              "id": "e6b82b9b-3684-4979-bf18-0a5dcd8ae7f9",
+              "name": "ticket_note",
+              "value": "Low complexity message",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1856,
+        272
+      ],
+      "id": "4c2d9daa-432a-48cc-9958-6c6085a7561e",
+      "name": "Set ticket_url1"
     }
   ],
   "pinData": {},
@@ -119,35 +456,148 @@
       "main": [
         [
           {
-            "node": "Complexity Classifier",
+            "node": "Calculate Complexity + Urgency",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Complexity Classifier": {
+    "Append row in sheet": {
       "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [],
+        []
       ]
     },
-    "If": {
+    "Send email": {
       "main": [
         []
       ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Create A Bug": {
+      "main": [
+        [
+          {
+            "node": "Set ticket_url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refresh JSON Data": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If Urgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Urgent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Calculate Complexity + Urgency": {
+      "main": [
+        [
+          {
+            "node": "If Bug Is Complex",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Bug Is Complex": {
+      "main": [
+        [
+          {
+            "node": "Create A Bug",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Refresh JSON Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set ticket_url1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set ticket_url": {
+      "main": [
+        [
+          {
+            "node": "Refresh JSON Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set ticket_url1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If Urgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "TBk81utIUYxRkhaI"
   },
-  "versionId": "466534af-b166-4984-88cf-1a8493b65f1e",
+  "versionId": "730138bf-f709-4371-84bf-54b9f21b1beb",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "770fb38c63bcc2e12acec9f7736933f1584f732a437d461627c5073e98a6bd6f"
@@ -155,10 +605,10 @@
   "id": "DZIo9vM7pkQWQ9jU",
   "tags": [
     {
-      "name": "v1",
-      "id": "2yvNh6ZccJtOZWm3",
       "updatedAt": "2025-10-31T15:13:18.697Z",
-      "createdAt": "2025-10-31T15:13:18.697Z"
+      "createdAt": "2025-10-31T15:13:18.697Z",
+      "id": "2yvNh6ZccJtOZWm3",
+      "name": "v1"
     }
   ]
 }

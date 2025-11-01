@@ -1,0 +1,98 @@
+{
+  "name": "Global Error Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        96
+      ],
+      "id": "90ac5181-8690-4c1b-9804-7c4d6a80e2a7",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "fromEmail": "jonathan.barnette@gmail.com ",
+        "toEmail": "jonathan.barnette@gmail.com ",
+        "subject": "=Workflow Failure:  {{ $json.workflow.name }}",
+        "html": "=Workflow Failed: {{ $json.workflow.name }}<br>\nOn node: {{ $json.execution.lastNodeExecuted }}<br>\nMessage: {{ $json.execution.error.message }}<br>\nExecution instance: {{ $json.execution.url }}<br>\nError Time: {{ new Date().toISOString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "ddf9d6a0-3524-491b-a6f3-a79885c57e38",
+      "name": "Send email",
+      "webhookId": "893fabe2-80ed-41ff-856d-4bf448cd31b9",
+      "credentials": {
+        "smtp": {
+          "id": "nuu4lfQx6bB9PhD7",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U09Q14BSL0N",
+          "mode": "list",
+          "cachedResultName": "jonathan.barnette"
+        },
+        "text": "=Workflow Failed: {{ $json.workflow.name }}\nOn node: {{ $json.execution.lastNodeExecuted }}\nMessage: {{ $json.execution.error.message }}\nExecution instance: {{ $json.execution.url }}\nError Time: {{ new Date().toISOString() }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        192
+      ],
+      "id": "06b67aa7-e7d3-40c6-8703-e13ae38cfafe",
+      "name": "Send a message",
+      "webhookId": "2eaf512e-debb-445c-ae32-c2c2e9d999e4",
+      "credentials": {
+        "slackApi": {
+          "id": "YXdTnRAQKgRGXliI",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "47ac85f3-0fc8-44dc-8725-d97526cc8dd4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "770fb38c63bcc2e12acec9f7736933f1584f732a437d461627c5073e98a6bd6f"
+  },
+  "id": "TBk81utIUYxRkhaI",
+  "tags": []
+}
